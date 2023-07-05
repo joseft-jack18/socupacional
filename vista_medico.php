@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="form-group col-md-2">
-                    <label class="control-label">Hasta </label>
+                    <label class="control-label">Hasta dsfsdf</label>
                     <input type="date" class="form-control" id="fecha_final" value="<?=date("Y-m-d")?>" onchange='load(1)'>
                 </div>
             </div>
