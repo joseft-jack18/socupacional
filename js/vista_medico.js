@@ -43,6 +43,10 @@ function atender(cod_atencion, cod_especialidad){
     else if(cod_especialidad == 34){
         window.location = "consulta_neumologia.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
     }
+    //ODONTOLOGIA
+    else if(cod_especialidad == 34){
+        window.location = "consulta_odontologia.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
+    }
 
     /*//MEDICINA GENERAL
     if(cod_especialidad == 26){
