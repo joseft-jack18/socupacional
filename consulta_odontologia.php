@@ -18,10 +18,10 @@
     }
 
     $sql = "SELECT P.NUM_HC, CONCAT(P.APE_PATERNO,' ',P.APE_MATERNO,' ',P.NOM_PACIENTE) AS PACIENTE, 
-            DATEDIFF(YEAR,P.FEC_NACIMIENTO,GETDATE()) AS EDAD, P.DES_GENERO, SL.PULMONES, SL.DESCRIPCION,
-            SL.FVC, SL.FEV1, SL.FEV1_FVC, SL.FEF, SL.CONCLUSION
+            DATEDIFF(YEAR,P.FEC_NACIMIENTO,GETDATE()) AS EDAD, P.DES_GENERO, SL.PIEZAS_MAL_ESTADO,
+            SL.PIEZAS_FALTANTES
             FROM $BD..ADM_ATENCION A
-            INNER JOIN $BD..SO_RESULTADO_NEUMOLOGIA SL ON SL.COD_ATENCION = A.COD_ATENCION
+            INNER JOIN $BD..SO_RESULTADO_ODONTOLOGIA SL ON SL.COD_ATENCION = A.COD_ATENCION
             INNER JOIN $BD..HCE_CONSULTA_EXTERNA H ON H.COD_ATENCION = A.COD_ATENCION
             INNER JOIN $BD..ADM_PACIENTE P ON P.COD_PACIENTE = H.COD_PACIENTE
             WHERE A.COD_ATENCION = $cod_atencion";
@@ -33,13 +33,8 @@
     $EDAD = $row['EDAD'];
     if($row['DES_GENERO'] == "MA"){ $DES_GENERO = "MASCULINO"; } else { $DES_GENERO = "FEMENINO"; }
 
-    $PULMONES = $row['PULMONES'];
-    $DESCRIPCION = strtoupper($row['DESCRIPCION']);
-    $FVC = $row['FVC'];
-    $FEV1 = $row['FEV1'];
-    $FEV1_FVC = $row['FEV1_FVC'];
-    $FEF = $row['FEF'];
-    $CONCLUSION = $row['CONCLUSION'];
+    $PIEZAS_MAL_ESTADO = strtoupper($row['PIEZAS_MAL_ESTADO']);
+    $PIEZAS_FALTANTES = strtoupper($row['PIEZAS_FALTANTES']);
     
 ?>
 
@@ -48,62 +43,24 @@
     <div class="col-md-9">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title text-center">FUNCION RESPIRATORIA</h4>        
+                <h4 class="card-title text-center">REVISION ODONTOLÓGICA</h4>        
 
-                <form method="post" id="guardar_datos_evaluacion_neumologia" name="guardar_datos_evaluacion_neumologia">
+                <form method="post" id="guardar_datos_evaluacion_odontologia" name="guardar_datos_evaluacion_odontologia">
                     <input type="hidden" id="cod_atencion" name="cod_atencion" class="form-control" value="<?=$cod_atencion?>">
                     <input type="hidden" id="sucursal" name="sucursal" class="form-control" value="<?=$sucursal?>">
 
                     <div class="row p-20">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label">PULMONES <span class="text-danger">*</span></label>
-                                <select class="custom-select form-control" name="PULMONES" id="PULMONES">
-                                    <option value="1" <?php if($PULMONES != 2){ echo "selected"; } ?>>Normal</option>
-                                    <option value="2" <?php if($PULMONES == 2){ echo "selected"; } ?>>Anormal</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label">DESCRIPCION <span class="text-danger"></span></label>
-                                <textarea class="form-control" id="DESCRIPCION" name="DESCRIPCION" rows="3"><?=$DESCRIPCION?></textarea>
+                                <label class="control-label">PIEZAS EN MAL ESTADO <span class="text-danger">*</span></label>
+                                <input type="text" id="PIEZAS_MAL_ESTADO" name="PIEZAS_MAL_ESTADO" class="form-control" value="<?=$PIEZAS_MAL_ESTADO?>" required>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label">FVC <span class="text-danger">*</span></label>
-                                <input type="text" id="FVC" name="FVC" class="form-control" value="<?=$FVC?>" required>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">FEV1 <span class="text-danger">*</span></label>
-                                <input type="text" id="FEV1" name="FEV1" class="form-control" value="<?=$FEV1?>" required>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">FEV1/FVC <span class="text-danger">*</span></label>
-                                <input type="text" id="FEV1_FVC" name="FEV1_FVC" class="form-control" value="<?=$FEV1_FVC?>" required readonly>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">FEF <span class="text-danger">*</span></label>
-                                <input type="text" id="FEF" name="FEF" class="form-control" value="<?=$FEF?>" required>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label">CONCLUSIONES <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="CONCLUSION" name="CONCLUSION" rows="3" required><?=$CONCLUSION?></textarea>
+                                <label class="control-label">PIEZAS QUE FALTAN <span class="text-danger">*</span></label>
+                                <input type="text" id="PIEZAS_FALTANTES" name="PIEZAS_FALTANTES" class="form-control" value="<?=$PIEZAS_FALTANTES?>" required>
                             </div>
                         </div>
                     </div>
@@ -111,7 +68,7 @@
                     <hr>
 
                     <div class="col-md-12 text-right">                              
-                        <button type="submit" id="guardar_registro_neumologia" class="btn waves-effect waves-light btn-bloc btn-success"><i class="mdi mdi-content-save"></i> GUARDAR</button>
+                        <button type="submit" id="guardar_registro_odontologia" class="btn waves-effect waves-light btn-bloc btn-success"><i class="mdi mdi-content-save"></i> GUARDAR</button>
                         <div id="resultados_ajax"></div>
                     </div>
                 </form>

@@ -44,7 +44,7 @@ function atender(cod_atencion, cod_especialidad){
         window.location = "consulta_neumologia.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
     }
     //ODONTOLOGIA
-    else if(cod_especialidad == 34){
+    else if(cod_especialidad == 40){
         window.location = "consulta_odontologia.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
     }
 
@@ -259,6 +259,28 @@ $("#guardar_datos_evaluacion_neumologia").submit(function( event ) {
     $.ajax({
         type: "POST",
         url: "ajax/Medico/guardar_consulta_neumologia.php",
+        data: parametros,
+        beforeSend: function(objeto){
+            $("#resultados_ajax").html("Mensaje: Cargando...");
+        },           
+        success: function(datos){
+            $("#resultados_ajax").html(datos);
+            $('#guardar_datos').attr("disabled", false);                
+        }  
+    });
+    event.preventDefault();
+});
+
+//------------------------------------------------------------------------------------------------------------------
+//----------------------------------------- HISTORIA ODONTOLOGIA ---------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+$("#guardar_datos_evaluacion_odontologia").submit(function( event ) {
+    $('#guardar_registro_odontologia').attr("disabled", true);
+    
+    let parametros = $(this).serialize();
+    $.ajax({
+        type: "POST",
+        url: "ajax/Medico/guardar_consulta_odontologia.php",
         data: parametros,
         beforeSend: function(objeto){
             $("#resultados_ajax").html("Mensaje: Cargando...");
