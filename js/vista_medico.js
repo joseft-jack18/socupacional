@@ -47,6 +47,10 @@ function atender(cod_atencion, cod_especialidad){
     else if(cod_especialidad == 40){
         window.location = "consulta_odontologia.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
     }
+    //MEDICINA GENERAL
+    else if(cod_especialidad == 26){
+        window.location = 'consulta_medicina.php?cod_atencion='+cod_atencion+'&sucursal='+sucursal;
+    }
 
     /*//MEDICINA GENERAL
     if(cod_especialidad == 26){
