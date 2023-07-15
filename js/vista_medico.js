@@ -51,11 +51,12 @@ function atender(cod_atencion, cod_especialidad){
     else if(cod_especialidad == 26){
         window.location = 'consulta_medicina.php?cod_atencion='+cod_atencion+'&sucursal='+sucursal;
     }
-
-    /*//MEDICINA GENERAL
-    if(cod_especialidad == 26){
-        window.location = 'consulta_mege.php?cod_atencion='+cod_atencion+'&sucursal='+sucursal;
+    //OTRAS ESPECIALIDADES
+    else {
+        window.location = "consulta.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
     }
+
+    /*
     //MEDICINA OCUPACIONAL
     else if(cod_especialidad == 31){
         window.location = "consulta_socu.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
@@ -296,3 +297,249 @@ $("#guardar_datos_evaluacion_odontologia").submit(function( event ) {
     });
     event.preventDefault();
 });
+
+//------------------------------------------------------------------------------------------------------------------
+//----------------------------------------- HISTORIA CLINICA NORMAL ------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+$(document).ready(function(){
+    cargar_diagnosticos(1);
+    cargar_diagnosticos(2);
+    cargar_plan(1);
+    cargar_plan(2);
+    cargar_plan(3);
+});
+
+function showContent_ap() {
+    checkbox11 = document.getElementById("checkbox11");
+    ap = document.getElementById("ap");
+    ap_v = document.getElementById("ap_v");
+  
+    if (checkbox11.checked) {
+        ap_v.style.display = 'block';
+        ap.style.display = 'none';
+    } else {
+        ap_v.style.display = 'none';
+        ap.style.display = 'block';
+    }
+}
+  
+function showContent_aa() {
+    checkbox12 = document.getElementById("checkbox12");
+    aa = document.getElementById("aa");
+    aa_v = document.getElementById("aa_v");
+  
+    if (checkbox12.checked) {
+        aa_v.style.display = 'block';
+        aa.style.display = 'none';
+    } else {
+        aa_v.style.display = 'none';
+        aa.style.display = 'block';
+    }
+}
+  
+function showContent_af() {
+    checkbox13 = document.getElementById("checkbox13");
+    af = document.getElementById("af");
+    af_v = document.getElementById("af_v");
+  
+    if (checkbox13.checked) {
+        af_v.style.display = 'block';
+        af.style.display = 'none';
+    } else {
+        af_v.style.display = 'none';
+        af.style.display = 'block';
+    }
+}
+
+//DIAGNOSTICOS
+$(document).ready(function(){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
+
+    $("#d_presuntivo").autocomplete({
+        source: "ajax/autocomplete/diagnosticos.php?sucursal="+sucursal,
+        minLength: 2,
+        select: function(event, ui) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "ajax/Medico/guardar_diagnostico.php",
+                data: {
+                    sucursal: sucursal,
+                    cod_atencion: cod_atencion,
+                    cod_diagnostico: ui.item.cod_diagnostico,
+                    tipo: 1
+                },         
+                success: function(resp){
+                    console.log(resp);
+                    $('#d_presuntivo').val("");
+                    cargar_diagnosticos(1);
+                }  
+            });       
+        }
+    });
+
+    $("#d_definitivo").autocomplete({
+        source: "ajax/autocomplete/diagnosticos.php?sucursal="+sucursal,
+        minLength: 2,
+        select: function(event, ui) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "ajax/Medico/guardar_diagnostico.php",
+                data: {
+                    sucursal: sucursal,
+                    cod_atencion: cod_atencion,
+                    cod_diagnostico: ui.item.cod_diagnostico,
+                    tipo: 2
+                },         
+                success: function(resp){
+                    console.log(resp);
+                    $('#d_definitivo').val("");
+                    cargar_diagnosticos(2);
+                }  
+            });       
+        }
+    });
+});
+
+function cargar_diagnosticos(tipo){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
+
+    $.post("ajax/Medico/cargar_diagnosticos.php", { sucursal: sucursal, cod_atencion: cod_atencion, tipo: tipo }, function(data){
+        if(tipo == 1){
+            $("#diagnosticos_presuntivos").html(data);
+        } else {
+            $("#diagnosticos_definitivos").html(data);
+        }        
+    });
+}
+
+function quitar_diagnostico(id){
+    let sucursal = $('#sucursal').val();
+    $.ajax({
+        type: "POST",
+        url: "ajax/Medico/quitar_diagnostico.php",
+        data: {
+            sucursal: sucursal,
+            id: id
+        },         
+        success: function(resp){
+            console.log(resp);
+            cargar_diagnosticos(1);
+            cargar_diagnosticos(2);
+        }  
+    });  
+}
+
+//PLAN DE TRABAJO
+$(document).ready(function(){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
+
+    $("#examen_laboratorio").autocomplete({
+        source: "ajax/autocomplete/laboratorio.php?sucursal="+sucursal,
+        minLength: 2,
+        select: function(event, ui) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "ajax/Medico/guardar_plan.php",
+                data: {
+                    sucursal: sucursal,
+                    cod_atencion: cod_atencion,
+                    cod_articulo: ui.item.cod_articulo_serv,
+                    tipo: 2
+                },         
+                success: function(resp){
+                    console.log(resp);
+                    $('#examen_laboratorio').val("");
+                    cargar_plan(2);
+                }  
+            });       
+        }
+    });
+
+    $("#examen_radiologico").autocomplete({
+        source: "ajax/autocomplete/radiologia.php?sucursal="+sucursal,
+        minLength: 2,
+        select: function(event, ui) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "ajax/Medico/guardar_plan.php",
+                data: {
+                    sucursal: sucursal,
+                    cod_atencion: cod_atencion,
+                    cod_articulo: ui.item.cod_articulo_serv,
+                    tipo: 3
+                },         
+                success: function(resp){
+                    console.log(resp);
+                    $('#examen_radiologico').val("");
+                    cargar_plan(3);
+                }  
+            });       
+        }
+    });
+
+    $("#procedimiento_especial").autocomplete({
+        source: "ajax/autocomplete/procedimiento.php?sucursal="+sucursal,
+        minLength: 2,
+        select: function(event, ui) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "ajax/Medico/guardar_plan.php",
+                data: {
+                    sucursal: sucursal,
+                    cod_atencion: cod_atencion,
+                    cod_articulo: ui.item.cod_articulo_serv,
+                    tipo: 1
+                },         
+                success: function(resp){
+                    console.log(resp);
+                    $('#procedimiento_especial').val("");
+                    cargar_plan(1);
+                }  
+            });       
+        }
+    });
+});
+
+function cargar_plan(tipo){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
+
+    $.post("ajax/Medico/cargar_plan.php", { sucursal: sucursal, cod_atencion: cod_atencion, tipo: tipo }, function(data){
+        if(tipo == 1){
+            $("#procedimientos_especiales").html(data);
+        } else if(tipo == 2) {
+            $("#examenes_laboratorio").html(data);
+        } else if(tipo == 3) {
+            $("#examenes_radiologicos").html(data);
+        }
+    });
+}
+
+function quitar_plan(id){
+    let sucursal = $('#sucursal').val();
+    $.ajax({
+        type: "POST",
+        url: "ajax/Medico/quitar_plan.php",
+        data: {
+            sucursal: sucursal,
+            id: id
+        },         
+        success: function(resp){
+            console.log(resp);
+            cargar_plan(1);
+            cargar_plan(2);
+            cargar_plan(3);
+        }  
+    });  
+}
+
+//INTERCONSULTAS
+
