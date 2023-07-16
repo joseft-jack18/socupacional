@@ -515,22 +515,19 @@
                                         <div class="col-md-12">
                                             <div class="form-group"> 
                                                 <div class="table-responsive">  
-                                                    <table style="border: hidden" id="tratamientos">  
-                                                        <tr id="rowt11">
-                                                            <td width="400"><input type="text" name="nombre_medicamento[]" id="nombre_medicamento_1" class="form-control input_tr" placeholder="Nombre Medicamento"/></td>  
-                                                            <td width="200"><input type="text" name="forma[]" id="forma_1" placeholder="Forma" class="form-control" /></td>  
-                                                            <td><input id="id_tratamiento_1" name="id_tratamiento[]" type='hidden'></td> 
+                                                    <table style="border: hidden" class="col-md-12">  
+                                                        <tr>
+                                                            <td width="800"><input type="text" name="medicamento" id="medicamento" class="form-control" placeholder="Nombre Medicamento"/></td>  
+                                                            <td width="200"><input type="text" name="forma" id="forma" placeholder="Forma" class="form-control"/></td>  
+                                                            <td rowspan="2"><button type="button" class="btn btn-block btn-success" style="height: 70px" onclick="guardar_tratamiento()"><i class="fa fa-plus"></i></button></td> 
                                                         </tr>
-                                                        <tr id="rowt21">
-                                                            <td width="800"><input type="text" name="dosis[]" id="dosis_1" class="form-control" placeholder="Dosis"/></td>  
-                                                            <td width="200"><input type="text" name="cantidad[]" id="cantidad_1" placeholder="Cantidad" class="form-control" /></td>  
-                                                        </tr>  
-                                                        <tr id="rowt31">
-                                                            <td width="700"></td>  
-                                                            <td width="300"><button type="button" name="add_tratamiento" id="add_tratamiento" class="btn btn-block btn-success"><i class="fa fa-plus"></i> AGREGAR MEDICAMENTO</button></td>  
+                                                        <tr>
+                                                            <td width="800"><input type="text" name="dosis" id="dosis" class="form-control" placeholder="Dosis"/></td>  
+                                                            <td width="200"><input type="text" name="cantidad" id="cantidad" placeholder="Cantidad" class="form-control"/></td>  
                                                         </tr>
                                                     </table>
                                                 </div>
+                                                <div class="table-responsive" id="tratamientos"></div>
                                             </div>
                                         </div>
 

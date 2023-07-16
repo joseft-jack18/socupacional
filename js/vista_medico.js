@@ -307,6 +307,8 @@ $(document).ready(function(){
     cargar_plan(1);
     cargar_plan(2);
     cargar_plan(3);
+    cargar_interconsulta();
+    cargar_tratamiento();
 });
 
 function showContent_ap() {
@@ -542,4 +544,142 @@ function quitar_plan(id){
 }
 
 //INTERCONSULTAS
+$(document).ready(function(){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
 
+    $("#interconsulta").autocomplete({
+        source: "ajax/autocomplete/interconsulta.php?sucursal="+sucursal,
+        minLength: 2,
+        select: function(event, ui) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "ajax/Medico/guardar_interconsulta.php",
+                data: {
+                    sucursal: sucursal,
+                    cod_atencion: cod_atencion,
+                    cod_especialidad: ui.item.cod_especialidad
+                },         
+                success: function(resp){
+                    console.log(resp);
+                    $('#interconsulta').val("");
+                    cargar_interconsulta();
+                }  
+            });       
+        }
+    });
+});
+
+function cargar_interconsulta(){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
+
+    $.post("ajax/Medico/cargar_interconsulta.php", { sucursal: sucursal, cod_atencion: cod_atencion }, function(data){
+        $("#interconsultas").html(data);
+    });
+}
+
+function quitar_interconsulta(id){
+    let sucursal = $('#sucursal').val();
+    $.ajax({
+        type: "POST",
+        url: "ajax/Medico/quitar_interconsulta.php",
+        data: {
+            sucursal: sucursal,
+            id: id
+        },         
+        success: function(resp){
+            console.log(resp);
+            cargar_interconsulta();
+        }  
+    });  
+}
+
+//TRATAMIENTO
+$(document).ready(function(){
+    let sucursal = $('#sucursal').val();
+
+    $("#medicamento").autocomplete({
+        source: "ajax/autocomplete/medicamentos.php?sucursal="+sucursal,
+        minLength: 2,
+        select: function(event, ui) {
+            event.preventDefault();
+            $('#medicamento').val(ui.item.cod_articulo_serv+' | '+ui.item.des_articulo_serv);
+        }
+    });
+});
+
+function guardar_tratamiento(){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
+    let medicamento = $('#medicamento').val();
+    let forma = $('#forma').val();
+    let dosis = $('#dosis').val();
+    let cantidad = $('#cantidad').val();
+
+    $.ajax({
+        type: "POST",
+        url: "ajax/Medico/guardar_tratamiento.php",
+        data: {
+            sucursal: sucursal,
+            cod_atencion: cod_atencion,
+            medicamento: medicamento,
+            forma: forma,
+            dosis: dosis,
+            cantidad: cantidad
+        },         
+        success: function(resp){
+            console.log(resp);
+            $('#dosis').val("");
+            $('#forma').val("");
+            $('#medicamento').val("");
+            $('#cantidad').val("");
+            cargar_tratamiento();
+        }  
+    });
+}
+
+function cargar_tratamiento(){
+    let sucursal = $('#sucursal').val();
+    let cod_atencion = $('#cod_atencion').val();
+
+    $.post("ajax/Medico/cargar_tratamiento.php", { sucursal: sucursal, cod_atencion: cod_atencion }, function(data){
+        $("#tratamientos").html(data);
+    });
+}
+
+function quitar_tratamiento(id){
+    let sucursal = $('#sucursal').val();
+    $.ajax({
+        type: "POST",
+        url: "ajax/Medico/quitar_tratamiento.php",
+        data: {
+            sucursal: sucursal,
+            id: id
+        },         
+        success: function(resp){
+            console.log(resp);
+            cargar_tratamiento();
+        }  
+    });  
+}
+
+$("#guardar_consulta").submit(function( event ) {
+    $('#guardar_datos').attr("disabled", true);
+    
+    let parametros = $(this).serialize();
+    $.ajax({
+        type: "POST",
+        url: "ajax/Medico/guardar_consulta.php",
+        data: parametros,
+        beforeSend: function(objeto){
+            $("#resultados_ajax").html("Mensaje: Cargando...");
+        },           
+        success: function(datos){
+            $("#resultados_ajax").html(datos);
+            $('#guardar_datos').attr("disabled", false);                
+        }  
+    });
+    event.preventDefault();
+});
