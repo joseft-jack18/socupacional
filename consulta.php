@@ -35,11 +35,6 @@
     else { $DES_ANTE_ALERGIAS = strtoupper($row['DES_ANTE_ALERGIAS']); }
     if($row['DES_ANTE_FAMILIARES'] == null || $row['DES_ANTE_FAMILIARES'] == ""){ $DES_ANTE_FAMILIARES = "NINGUNO"; } 
     else { $DES_ANTE_FAMILIARES = strtoupper($row['DES_ANTE_FAMILIARES']); }
-    
-
-
-
-
 
     //DATOS DE TRIAJE----------------------------------------------------------------------------------------------
     $sql_triaje = "SELECT DISTINCT H.DES_TALLA, H.DES_PESO, H.DES_IMC, H.DES_FRE_RESPIRA, H.DES_FRE_CARDIACA, 
@@ -120,8 +115,9 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <input type="text" id="t_enfermedad" name="t_enfermedad" class="form-control">
-                                                        <input type='hidden' id="cod_atencion" name="cod_atencion" value="<?=$cod_atencion?>" >
-                                                        <input type='hidden' id="sucursal" name="sucursal" value="<?=$sucursal?>" >
+                                                        <input type="hidden" id="cod_atencion" name="cod_atencion" value="<?=$cod_atencion?>">
+                                                        <input type="hidden" id="cod_paciente" name="cod_paciente" value="<?=$cod_paciente?>">
+                                                        <input type="hidden" id="sucursal" name="sucursal" value="<?=$sucursal?>">
                                                     </div>
                                                     <div class="col-md-8">
                                                         <select class="form-control custom-select" id="des_tiempo" name="des_tiempo">

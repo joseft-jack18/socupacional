@@ -666,7 +666,7 @@ function quitar_tratamiento(id){
 }
 
 $("#guardar_consulta").submit(function( event ) {
-    $('#guardar_datos').attr("disabled", true);
+    //$('#guardar_datos').attr("disabled", true);
     
     let parametros = $(this).serialize();
     $.ajax({
