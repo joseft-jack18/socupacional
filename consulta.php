@@ -20,7 +20,10 @@
 
 
     //DATOS DE LA HISTORIA------------------------------------------------------------------------------------------------
-    $sql = "SELECT P.DES_ALER_CIRU, P.DES_ANTE_ALERGIAS, P.DES_ANTE_FAMILIARES, A.COD_EXPEDIENTE
+    $sql = "SELECT P.DES_ALER_CIRU, P.DES_ANTE_ALERGIAS, P.DES_ANTE_FAMILIARES, A.COD_EXPEDIENTE,
+            H.DES_TIEMPO_ENF, H.DES_MOTIVO_CONS, H.DES_FUNCIONES, H.DES_SED, H.DES_APETITO,
+            H.DES_SUENO, H.DES_RITMO_URINARIO, H.DES_RITMO_EVACUA, H.DES_EXAMEN_GENERAL,
+            H.DES_EXAMEN_PREFERENTE, H.DES_OBSERVACIONES, H.FEC_PROXIMA_CITA, H.MEDIDAS_HIGIENICAS
             FROM $BD..ADM_ATENCION A 
             INNER JOIN $BD..HCE_CONSULTA_EXTERNA H ON H.COD_ATENCION = A.COD_ATENCION
             INNER JOIN $BD..ADM_PACIENTE P ON P.COD_PACIENTE = H.COD_PACIENTE
@@ -36,11 +39,46 @@
     if($row['DES_ANTE_FAMILIARES'] == null || $row['DES_ANTE_FAMILIARES'] == ""){ $DES_ANTE_FAMILIARES = "NINGUNO"; } 
     else { $DES_ANTE_FAMILIARES = strtoupper($row['DES_ANTE_FAMILIARES']); }
 
+    $DES_TIEMPO_ENF = $row['DES_TIEMPO_ENF'];
+    if($DES_TIEMPO_ENF == null || $DES_TIEMPO_ENF == ''){
+        $cantidad = ''; 
+        $tiempo = '';
+    } else {
+        $dividir = explode(" ", $DES_TIEMPO_ENF);
+        $cantidad = $dividir[0]; 
+        $tiempo = $dividir[1];
+    }    
+    $DES_MOTIVO_CONS = strtoupper($row['DES_MOTIVO_CONS']);
+    $DES_FUNCIONES = strtoupper($row['DES_FUNCIONES']);
+    $DES_SED = $row['DES_SED'];
+    $DES_APETITO = $row['DES_APETITO'];
+    $DES_SUENO = $row['DES_SUENO'];
+    $DES_RITMO_URINARIO = $row['DES_RITMO_URINARIO'];
+    $DES_RITMO_EVACUA = $row['DES_RITMO_EVACUA'];
+
+
+    $DES_EXAMEN_GENERAL = $row['DES_EXAMEN_GENERAL'];
+    if (strpos($DES_EXAMEN_GENERAL, 'LUCIDO, ORIENTADO EN TIEMPO, ESPACIO Y PERSONA. ') === false) { 
+        $lotep = ""; $des_examen_genera1 = $des_examen_general; 
+    } else { 
+        $lotep = "checked"; $des_examen_genera1 = substr($des_examen_general, 48); 
+    }
+
+
+
+    $DES_EXAMEN_PREFERENTE = strtoupper($row['DES_EXAMEN_PREFERENTE']);
+    $DES_OBSERVACIONES = strtoupper($row['DES_OBSERVACIONES']);
+    //$FEC_PROXIMA_CITA = $row['FEC_PROXIMA_CITA'];
+    $MEDIDAS_HIGIENICAS = strtoupper($row['MEDIDAS_HIGIENICAS']);
+
+
     //DATOS DE TRIAJE----------------------------------------------------------------------------------------------
     $sql_triaje = "SELECT DISTINCT H.DES_TALLA, H.DES_PESO, H.DES_IMC, H.DES_FRE_RESPIRA, H.DES_FRE_CARDIACA, 
-                   H.DES_PRESION_ARTERIAL, H.DES_TEMPERATURA 
+                   H.DES_PRESION_ARTERIAL, H.DES_TEMPERATURA, CONCAT(P.APE_PATERNO,' ',P.APE_MATERNO,' ',P.NOM_PACIENTE) AS PACIENTE,
+                   P.NUM_HC, P.COD_PACIENTE, DATEDIFF(YEAR,P.FEC_NACIMIENTO,GETDATE()) AS EDAD, P.DES_GENERO
                    FROM $BD..HCE_CONSULTA_EXTERNA H
                    INNER JOIN $BD..ADM_ATENCION A ON A.COD_ATENCION = H.COD_ATENCION
+                   INNER JOIN $BD..ADM_PACIENTE P ON P.COD_PACIENTE = H.COD_PACIENTE
                    WHERE A.COD_EXPEDIENTE = $COD_EXPEDIENTE AND H.DES_TALLA IS NOT NULL AND H.DES_PESO IS NOT NULL 
                    AND H.DES_IMC IS NOT NULL AND H.DES_FRE_RESPIRA IS NOT NULL AND H.DES_FRE_CARDIACA IS NOT NULL 
                    AND H.DES_PRESION_ARTERIAL IS NOT NULL AND H.DES_TEMPERATURA IS NOT NULL";
@@ -54,6 +92,11 @@
     $DES_FRE_CARDIACA = $row_triaje['DES_FRE_CARDIACA'];
     $DES_PRESION_ARTERIAL = $row_triaje['DES_PRESION_ARTERIAL'];
     $DES_TEMPERATURA = $row_triaje['DES_TEMPERATURA'];
+    $NUM_HC = $row_triaje['NUM_HC'];
+    $COD_PACIENTE = $row_triaje['COD_PACIENTE'];
+    $PACIENTE = strtoupper($row_triaje['PACIENTE']);
+    $EDAD = $row_triaje['EDAD'];
+    if($row_triaje['DES_GENERO'] == "MA"){ $DES_GENERO = "MASCULINO"; } else { $DES_GENERO = "FEMENINO"; }
 
 ?>
 
@@ -114,18 +157,18 @@
 
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                        <input type="text" id="t_enfermedad" name="t_enfermedad" class="form-control">
+                                                        <input type="text" id="t_enfermedad" name="t_enfermedad" class="form-control" value="<?=$cantidad?>">
                                                         <input type="hidden" id="cod_atencion" name="cod_atencion" value="<?=$cod_atencion?>">
-                                                        <input type="hidden" id="cod_paciente" name="cod_paciente" value="<?=$cod_paciente?>">
+                                                        <input type="hidden" id="cod_paciente" name="cod_paciente" value="<?=$COD_PACIENTE?>">
                                                         <input type="hidden" id="sucursal" name="sucursal" value="<?=$sucursal?>">
                                                     </div>
                                                     <div class="col-md-8">
                                                         <select class="form-control custom-select" id="des_tiempo" name="des_tiempo">
-                                                        <option value="">--</option>
-                                                        <option value="horas">Horas</option>
-                                                        <option value="dias">Días</option>
-                                                        <option value="meses">Meses</option>
-                                                        <option value="años">Años</option>
+                                                        <option value="" <?php if($tiempo == ''){ echo "selected"; } ?>>--</option>
+                                                        <option value="horas" <?php if($tiempo == 'horas'){ echo "selected"; } ?>>Horas</option>
+                                                        <option value="dias" <?php if($tiempo == 'dias'){ echo "selected"; } ?>>Días</option>
+                                                        <option value="meses" <?php if($tiempo == 'meses'){ echo "selected"; } ?>>Meses</option>
+                                                        <option value="años" <?php if($tiempo == 'años'){ echo "selected"; } ?>>Años</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -135,14 +178,14 @@
                                         <div class="col-md-8">
                                             <div class="form-group">
                                                 <label class="control-label">Motivo de Consulta <span class="text-danger">*</span></label>
-                                                <input required type="text" id="motivo" name="motivo" class="form-control" >
+                                                <input required type="text" id="motivo" name="motivo" class="form-control" value="<?=$DES_MOTIVO_CONS?>">
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="control-label">Signos y Síntomas Principales <span class="text-danger">*</span></label>
-                                                <textarea required class="form-control" id="funciones" name="funciones" rows="2"></textarea>
+                                                <textarea required class="form-control" id="funciones" name="funciones" rows="2"><?=$DES_FUNCIONES?></textarea>
                                             </div>
                                         </div>
 
@@ -150,10 +193,10 @@
                                             <div class="form-group">
                                                 <label class="control-label">Sed <span class="text-danger"></span></label>
                                                 <select class="form-control custom-select" id="sed" name="sed" data-placeholder="Choose a Category" tabindex="1">
-                                                    <option value="">--</option>
-                                                    <option value="1">Disminuido</option>
-                                                    <option value="2">Normal</option>
-                                                    <option value="3">Aumentado</option>
+                                                    <option value="" <?php if($DES_SED == "" || $DES_SED == null){ echo "selected"; }?>>--</option>
+                                                    <option value="1" <?php if($DES_SED == "1"){ echo "selected"; }?>>Disminuido</option>
+                                                    <option value="2" <?php if($DES_SED == "2"){ echo "selected"; }?>>Normal</option>
+                                                    <option value="3" <?php if($DES_SED == "3"){ echo "selected"; }?>>Aumentado</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -162,10 +205,10 @@
                                             <div class="form-group">
                                                 <label class="control-label">Apetito <span class="text-danger"></span></label>
                                                 <select class="form-control custom-select" id="apetito" name="apetito" data-placeholder="Choose a Category" tabindex="1">
-                                                    <option value="">--</option>
-                                                    <option value="1">Disminuido</option>
-                                                    <option value="2">Normal</option>
-                                                    <option value="3">Aumentado</option>
+                                                    <option value="" <?php if($DES_APETITO == "" || $DES_APETITO == null){ echo "selected"; }?>>--</option>
+                                                    <option value="1" <?php if($DES_APETITO == "1"){ echo "selected"; }?>>Disminuido</option>
+                                                    <option value="2" <?php if($DES_APETITO == "2"){ echo "selected"; }?>>Normal</option>
+                                                    <option value="3" <?php if($DES_APETITO == "3"){ echo "selected"; }?>>Aumentado</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -174,10 +217,10 @@
                                             <div class="form-group">
                                                 <label class="control-label">Sueño <span class="text-danger"></span></label>
                                                 <select class="form-control custom-select" id="sueno" name="sueno" data-placeholder="Choose a Category" tabindex="1">
-                                                    <option value="">--</option>
-                                                    <option value="1">Disminuido</option>
-                                                    <option value="2">Normal</option>
-                                                    <option value="3">Aumentado</option>
+                                                    <option value="" <?php if($DES_SUENO == "" || $DES_SUENO == null){ echo "selected"; }?>>--</option>
+                                                    <option value="1" <?php if($DES_SUENO == "1"){ echo "selected"; }?>>Disminuido</option>
+                                                    <option value="2" <?php if($DES_SUENO == "2"){ echo "selected"; }?>>Normal</option>
+                                                    <option value="3" <?php if($DES_SUENO == "3"){ echo "selected"; }?>>Aumentado</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -186,10 +229,10 @@
                                             <div class="form-group">
                                                 <label class="control-label">Ritmo Urinario <span class="text-danger"></span></label>
                                                 <select class="form-control custom-select" id="ritmo_urinario" name="ritmo_urinario" data-placeholder="Choose a Category" tabindex="1">
-                                                    <option value="">--</option>
-                                                    <option value="1">Disminuido</option>
-                                                    <option value="2">Normal</option>
-                                                    <option value="3">Aumentado</option>
+                                                    <option value="" <?php if($DES_RITMO_URINARIO == "" || $DES_RITMO_URINARIO == null){ echo "selected"; }?>>--</option>
+                                                    <option value="1" <?php if($DES_RITMO_URINARIO == "1"){ echo "selected"; }?>>Disminuido</option>
+                                                    <option value="2" <?php if($DES_RITMO_URINARIO == "2"){ echo "selected"; }?>>Normal</option>
+                                                    <option value="3" <?php if($DES_RITMO_URINARIO == "3"){ echo "selected"; }?>>Aumentado</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -198,10 +241,10 @@
                                             <div class="form-group">
                                                 <label class="control-label">Ritmo Evacuatorio <span class="text-danger"></span></label>
                                                 <select class="form-control custom-select" id="ritmo_evacuatorio" name="ritmo_evacuatorio" data-placeholder="Choose a Category" tabindex="1">
-                                                    <option value="">--</option>
-                                                    <option value="1">Disminuido</option>
-                                                    <option value="2">Normal</option>
-                                                    <option value="3">Aumentado</option>
+                                                    <option value="" <?php if($DES_RITMO_EVACUA == "" || $DES_RITMO_EVACUA == null){ echo "selected"; }?>>--</option>
+                                                    <option value="1" <?php if($DES_RITMO_EVACUA == "1"){ echo "selected"; }?>>Disminuido</option>
+                                                    <option value="2" <?php if($DES_RITMO_EVACUA == "2"){ echo "selected"; }?>>Normal</option>
+                                                    <option value="3" <?php if($DES_RITMO_EVACUA == "3"){ echo "selected"; }?>>Aumentado</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -375,7 +418,7 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <div class="row" id="vacio" style="display: block;">
-                                                            <textarea class="form-control" id="examen_general" name="examen_general" rows="3" ></textarea>
+                                                            <textarea class="form-control" id="examen_general" name="examen_general" rows="3"><?=$DES_EXAMEN_GENERAL?></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -385,7 +428,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="control-label">Examen Preferencial</label>
-                                                <textarea class="form-control" id="examen_preferencial" name="examen_preferencial" rows="3"></textarea>
+                                                <textarea class="form-control" id="examen_preferencial" name="examen_preferencial" rows="3"><?=$DES_EXAMEN_PREFERENTE?></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -530,7 +573,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="control-label">Medidas Higiénico Dietéticas <span class="text-danger">*</span></label>
-                                                <textarea class="form-control" id="medidas_higienicas" name="medidas_higienicas" rows="3"></textarea>
+                                                <textarea class="form-control" id="medidas_higienicas" name="medidas_higienicas" rows="3"><?=$MEDIDAS_HIGIENICAS?></textarea>
                                             </div>
                                         </div>                                                
                                     </div>                                                
@@ -544,7 +587,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="control-label">Observaciones</label>
-                                                <textarea class="form-control" id="observacion" name="observacion" rows="3"></textarea>
+                                                <textarea class="form-control" id="observacion" name="observacion" rows="3"><?=$DES_OBSERVACIONES?></textarea>
                                             </div>                                                
                                         </div>
 
@@ -581,7 +624,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label class="control-label">Apellidos y Nombres</label>
-                                <input readonly type="text" id="apellidos_nombres" name="apellidos_nombres" class="form-control" value="<?=$NOM_PACIENTE?>">  
+                                <input readonly type="text" id="apellidos_nombres" name="apellidos_nombres" class="form-control" value="<?=$PACIENTE?>">  
                             </div>
                         </div>
 
@@ -602,7 +645,7 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label class="control-label">Sexo</label>
-                                <input readonly type="text" id="sexo" name="sexo" class="form-control" value="<?=$GENERO?>">
+                                <input readonly type="text" id="sexo" name="sexo" class="form-control" value="<?=$DES_GENERO?>">
                             </div>
                         </div>
                     </div>
