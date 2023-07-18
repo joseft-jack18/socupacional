@@ -60,10 +60,6 @@ function atender(cod_atencion, cod_especialidad){
     //MEDICINA OCUPACIONAL
     else if(cod_especialidad == 31){
         window.location = "consulta_socu.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
-    }
-    //OTRAS ESPECIALIDADES
-    else {
-        window.location = "consulta.php?cod_atencion="+cod_atencion+"&sucursal="+sucursal;
     }*/
 }
 
@@ -84,6 +80,11 @@ function ver_historia(cod_atencion, cod_especialidad){
         VentanaCentrada('pdf/documentos/ver_psicologia.php?cod_atencion='+cod_atencion
                     +'&sucursal='+sucursal,'Factura','','1024','768','true');
     }
+    //OTRAS ESPECIALIDADES
+    else {
+        VentanaCentrada('pdf/documentos/ver_consulta.php?cod_atencion='+cod_atencion
+                    +'&sucursal='+sucursal,'Factura','','1024','768','true');
+    }
 
     /*//MEDICINA GENERAL
     if(cod_especialidad == 26){
@@ -96,11 +97,7 @@ function ver_historia(cod_atencion, cod_especialidad){
         VentanaCentrada('pdf/documentos/ver_socu.php?cod_atencion='+cod_atencion
                     +'&sucursal='+sucursal,'Factura','','1024','768','true');
     }
-    //OTRAS ESPECIALIDADES
-    else {
-        VentanaCentrada('pdf/documentos/ver_consulta.php?cod_atencion='+cod_atencion
-                    +'&sucursal='+sucursal,'Factura','','1024','768','true');
-    }*/
+    */
 }
 
 function subir(cod_atencion){
@@ -666,7 +663,7 @@ function quitar_tratamiento(id){
 }
 
 $("#guardar_consulta").submit(function( event ) {
-    //$('#guardar_datos').attr("disabled", true);
+    $('#guardar_datos').attr("disabled", true);
     
     let parametros = $(this).serialize();
     $.ajax({

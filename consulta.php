@@ -57,19 +57,46 @@
     $DES_RITMO_EVACUA = $row['DES_RITMO_EVACUA'];
 
 
-    $DES_EXAMEN_GENERAL = $row['DES_EXAMEN_GENERAL'];
+    $DES_EXAMEN_GENERAL = strtoupper($row['DES_EXAMEN_GENERAL']);
     if (strpos($DES_EXAMEN_GENERAL, 'LUCIDO, ORIENTADO EN TIEMPO, ESPACIO Y PERSONA. ') === false) { 
-        $lotep = ""; $des_examen_genera1 = $des_examen_general; 
+        $lotep = ""; 
+        $DES_EXAMEN_GENERAL = $DES_EXAMEN_GENERAL; 
     } else { 
-        $lotep = "checked"; $des_examen_genera1 = substr($des_examen_general, 48); 
+        $lotep = "checked"; 
+        $DES_EXAMEN_GENERAL = substr($DES_EXAMEN_GENERAL, 48); 
     }
 
-
+    $abeg = "";
+    $areg = "";
+    $ameg = "";
+    if (strpos($DES_EXAMEN_GENERAL, 'APARENTE BUEN ESTADO GENERAL. ') === false) { 
+        $abeg = "";
+        if (strpos($DES_EXAMEN_GENERAL, 'APARENTE REGULAR ESTADO GENERAL. ') === false) {
+            $areg = "";
+            if (strpos($DES_EXAMEN_GENERAL, 'APARENTE MAL ESTADO GENERAL. ') === false) { 
+                $ameg = "";
+            } else { 
+                $ameg = "checked"; 
+                $DES_EXAMEN_GENERAL = substr($DES_EXAMEN_GENERAL, 29); 
+            }
+        } else { 
+            $areg = "checked"; 
+            $DES_EXAMEN_GENERAL = substr($DES_EXAMEN_GENERAL, 33); 
+        }
+    } else { 
+        $abeg = "checked"; 
+        $DES_EXAMEN_GENERAL = substr($DES_EXAMEN_GENERAL, 30); 
+    }
 
     $DES_EXAMEN_PREFERENTE = strtoupper($row['DES_EXAMEN_PREFERENTE']);
     $DES_OBSERVACIONES = strtoupper($row['DES_OBSERVACIONES']);
-    //$FEC_PROXIMA_CITA = $row['FEC_PROXIMA_CITA'];
     $MEDIDAS_HIGIENICAS = strtoupper($row['MEDIDAS_HIGIENICAS']);
+
+    if($row['FEC_PROXIMA_CITA'] == NULL || $row['FEC_PROXIMA_CITA']->format('Y-m-d') == '1900-01-01'){
+        $FEC_PROXIMA_CITA = "Y-m-d";
+    } else {
+        $FEC_PROXIMA_CITA = $row['FEC_PROXIMA_CITA']->format('Y-m-d');
+    }
 
 
     //DATOS DE TRIAJE----------------------------------------------------------------------------------------------
@@ -395,22 +422,22 @@
                                                     </div>
               
                                                     <div class="custom-control custom-checkbox col-md-2">
-                                                        <input type="checkbox" class="custom-control-input"  name="lotepc" id="lotepc" value = "lotepc">
+                                                        <input type="checkbox" class="custom-control-input" name="lotepc" id="lotepc" value="lotepc" <?=$lotep?>>
                                                         <label class="custom-control-label" for="lotepc">LOTEP</label>
                                                     </div>
 
                                                     <div class="custom-control custom-radio col-sm-1">
-                                                        <input type="radio" class="custom-control-input" name="exa_ge" id="abegc" value = "abegc">
+                                                        <input type="radio" class="custom-control-input" name="exa_ge" id="abegc" value="abegc" <?=$abeg?>>
                                                         <label class="custom-control-label" for="abegc">ABEG</label>
                                                     </div>        
 
                                                     <div class="custom-control custom-radio col-sm-1">
-                                                        <input type="radio" class="custom-control-input" name="exa_ge" id="aregc" value = "aregc">
+                                                        <input type="radio" class="custom-control-input" name="exa_ge" id="aregc" value="aregc" <?=$areg?>>
                                                         <label class="custom-control-label" for="aregc">AREG</label>
                                                     </div>
 
                                                     <div class="custom-control custom-radio col-sm-1">
-                                                        <input type="radio" class="custom-control-input" name="exa_ge" id="amegc" value = "amegc" >
+                                                        <input type="radio" class="custom-control-input" name="exa_ge" id="amegc" value="amegc" <?=$ameg?>>
                                                         <label class="custom-control-label" for="amegc">AMEG</label>
                                                     </div>
                                                 </div>
@@ -594,7 +621,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label">Próxima Cita</label>
-                                                <input type="date" min="<?php echo date("Y-m-d");?>" id="fecha_proximacita" name="fecha_proximacita" class="form-control">   
+                                                <input type="date" min="<?php echo date("Y-m-d");?>" id="fecha_proximacita" name="fecha_proximacita" class="form-control" value="<?=$FEC_PROXIMA_CITA?>">   
                                             </div>
                                         </div>
                                     </div>
