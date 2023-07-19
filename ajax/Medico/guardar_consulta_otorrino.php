@@ -98,6 +98,18 @@
         }
 
 
+        //GUARDAR HORA DE ATENCION EN HCE_CONSULTA_EXTERNA------------------------
+        $sql_consulta = "UPDATE $BD..HCE_CONSULTA_EXTERNA SET FEC_ACTUALIZA = GETDATE() 
+                         WHERE COD_ATENCION = $cod_atencion";
+        $res_consulta = sqlsrv_query($conn, $sql_consulta);
+
+        if($res_consulta){ 
+            $messages[] = "Registro exitoso en la HCE_CONSULTA_EXTERNA";
+        } else {
+            $errors[]= "Error al registrar en la HCE_CONSULTA_EXTERNA";
+        }
+
+
         //var_dump($messages);
         //var_dump($errors);
 
