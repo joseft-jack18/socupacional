@@ -33,7 +33,7 @@
 
 	<br>
 
-	<table cellspacing="0" style="width: 100%; text-align: left; font-size: 11pt;">
+	<table cellspacing="0" style="width: 100%; text-align: left; font-size: 9pt;">
 		<tr>
 			<td style="width: 45%;" class='midnight-red2'>PACIENTE</td>
 			<td style="width: 10%;"></td>
@@ -41,10 +41,10 @@
 			<td style="width: 20%;" class='midnight-red2'>EDAD</td>
 		</tr>
 		<tr>
-			<td style="width: 45%;"><?php echo $paciente;?></td>
+			<td style="width: 45%;"><?=$PACIENTE?></td>
 			<td style="width: 10%;"></td>
-			<td style="width: 25%;"><?php echo $h_clinica;?></td>
-			<td style="width: 20%;"><?php echo $edad_paciente;?> AÑOS</td>
+			<td style="width: 25%;"><?=$NUM_HC?></td>
+			<td style="width: 20%;"><?=$EDAD?> AÑOS</td>
 		</tr>
 		<tr>
 			<td style="width: 45%;" class='midnight-red2'>MÉDICO</td>
@@ -53,10 +53,10 @@
 			<td style="width: 20%;" class='midnight-red2'>RNE</td>
 		</tr>
 		<tr>
-			<td style="width: 45%;"><?php echo $nombre_medico;?></td>
+			<td style="width: 45%;"><?=$MEDICO?></td>
 			<td style="width: 10%;"></td>
-			<td style="width: 25%;"><?php echo $CMP;?></td>
-			<td style="width: 20%;"><?php if(!empty($RNE)) {echo $RNE;} else { echo "";}?></td>
+			<td style="width: 25%;"><?=$NUM_CMP?></td>
+			<td style="width: 20%;"><?=$NUM_RNE?></td>
 		</tr>  
 		<tr>
 			<td style="width: 45%;" class='midnight-red2'>SERVICIO</td>
@@ -65,13 +65,15 @@
 			<td style="width: 20%;" class='midnight-red2'>TIPO</td>
 		</tr>
 		<tr>
-			<td style="width: 45%;"><?php echo $especialidad;?></td>
+			<td style="width: 45%;"><?=$ESPECIALIDAD?></td>
 			<td style="width: 10%;"></td>
-			<td style="width: 25%;"><?php echo $fec_atencion;?> <?php echo $hora_atencion;?></td>
+			<td style="width: 25%;"><?=$FEC_ATENCION." ".$HOR_ATENCION?></td>
 			<td style="width: 20%;">PARTICULAR</td>
 		</tr>      
     </table>
+
 	<br>
+	
 	<table cellspacing="0" style="width: 100%; text-align: left; font-size: 10pt;">
 	    <tr>
 	        <td style="width:100%; text-align:center;" class='midnight-red2'>ENFERMEDAD ACTUAL</td>
