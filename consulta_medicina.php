@@ -17,28 +17,80 @@
         $BD = 'CLTACNA_TEST';
     }
 
-    $sql = "SELECT P.NUM_HC, CONCAT(P.APE_PATERNO,' ',P.APE_MATERNO,' ',P.NOM_PACIENTE) AS PACIENTE, 
-            DATEDIFF(YEAR,P.FEC_NACIMIENTO,GETDATE()) AS EDAD, P.DES_GENERO, SL.PULMONES, SL.DESCRIPCION,
-            SL.FVC, SL.FEV1, SL.FEV1_FVC, SL.FEF, SL.CONCLUSION
-            FROM $BD..ADM_ATENCION A
-            INNER JOIN $BD..SO_RESULTADO_NEUMOLOGIA SL ON SL.COD_ATENCION = A.COD_ATENCION
-            INNER JOIN $BD..HCE_CONSULTA_EXTERNA H ON H.COD_ATENCION = A.COD_ATENCION
-            INNER JOIN $BD..ADM_PACIENTE P ON P.COD_PACIENTE = H.COD_PACIENTE
-            WHERE A.COD_ATENCION = $cod_atencion";
+    $sql = "SELECT CONCAT(P.APE_PATERNO,' ', P.APE_MATERNO,' ',P.NOM_PACIENTE) AS PACIENTE, P.NUM_HC, 
+            DATEDIFF(YEAR,P.FEC_NACIMIENTO,GETDATE()) AS EDAD, P.DES_GENERO, P.COD_PACIENTE,
+            S.ABDOMEN, S.CADERA, S.MUSLO, S.ABDOMENLA, S.OBSERVACIONES_APTITUD,
+            S.ABDUCCION180, S.ABDUCCION80, S.ABDUCCION90, S.ROTACION_INTERNA,
+            S.ABDUCCION180_DOLOR, S.ABDUCCION80_DOLOR, S.ABDUCCION90_DOLOR, S.ROTACION_INTERNA_DOLOR,
+            S.OBSERVACIONES_RANGOS
+            FROM $BD..SO_FICHA_MUSCULO_ESQUELETICA S
+            INNER JOIN $BD..ADM_PACIENTE P ON P.COD_PACIENTE = S.COD_PACIENTE
+            WHERE COD_ATENCION = $cod_atencion";
     $res = sqlsrv_query($conn, $sql);
     $row = sqlsrv_fetch_array($res);
 
+    $COD_PACIENTE = $row['COD_PACIENTE'];
     $NUM_HC = $row['NUM_HC'];
     $PACIENTE = strtoupper($row['PACIENTE']);
     $EDAD = $row['EDAD'];
     if($row['DES_GENERO'] == "MA"){ $DES_GENERO = "MASCULINO"; } else { $DES_GENERO = "FEMENINO"; }
+    $ABDOMEN = $row['ABDOMEN'];
+    $CADERA = $row['CADERA'];
+    $MUSLO = $row['MUSLO'];
+    $ABDOMENLA = $row['ABDOMENLA'];
+    $OBSERVACIONES_APTITUD = strtoupper($row['OBSERVACIONES_APTITUD']);
+    $ABDUCCION180 = $row['ABDUCCION180'];
+    $ABDUCCION80 = $row['ABDUCCION80'];
+    $ABDUCCION90 = $row['ABDUCCION90'];
+    $ROTACION_INTERNA = $row['ROTACION_INTERNA'];
+    $ABDUCCION180_DOLOR = $row['ABDUCCION180_DOLOR'];
+    $ABDUCCION80_DOLOR = $row['ABDUCCION80_DOLOR'];
+    $ABDUCCION90_DOLOR = $row['ABDUCCION90_DOLOR'];
+    $ROTACION_INTERNA_DOLOR = $row['ROTACION_INTERNA_DOLOR'];
+    $OBSERVACIONES_RANGOS = strtoupper($row['OBSERVACIONES_RANGOS']);
 
 
     //DATOS DE LA HISTORIA OCUPACIONAL
     $sql_hoc = "SELECT FEC_INICIO, EMPRESA, ACTIVIDADES, PUESTO, TIEMPO, CAUSA_RETIRO 
-                FROM $BD..SO_HISTORIA_OCUPACIONAL
-                WHERE COD_PACIENTE = $COD_PACIENTE";
+                FROM $BD..SO_HISTORIA_OCUPACIONAL WHERE COD_PACIENTE = $COD_PACIENTE";
     $res_hoc = sqlsrv_query($conn, $sql_hoc);
+
+
+    //DATOS DE LA FICHA OCUPACIONAL
+    $sql_foc = "SELECT ANILLOS, HERNIAS, VARICES, GENITALES, TACTO_RECTAL, RUIDO, CANCERIGENO, TEMPERATURA, CARGA, POLVO, 
+                MUTAGENICO, BIOLOGICO, REPETITIVO, SEGMENTARIO, SOLVENTE, POSTURA, PVD, TOTAL, METALES, TURNOS, OTROS, 
+                CABEZA, REFLEJOS, ABDOMEN, GANGLIOS, LENGUAJE 
+                FROM $BD..SO_FICHA_OCUPACIONAL WHERE COD_ATENCION = $cod_atencion";
+    $res_foc = sqlsrv_query($conn, $sql_foc);
+    $row_foc = sqlsrv_fetch_array($res_foc);
+
+    $ANILLOS = strtoupper($row_foc['ANILLOS']);
+    $HERNIAS = strtoupper($row_foc['HERNIAS']);
+    $VARICES = strtoupper($row_foc['VARICES']);
+    $GENITALES = strtoupper($row_foc['GENITALES']);
+    $TACTO_RECTAL = $row_foc['TACTO_RECTAL'];
+    $RUIDO = $row_foc['RUIDO'];
+    $CANCERIGENO = $row_foc['CANCERIGENO'];
+    $TEMPERATURA = $row_foc['TEMPERATURA'];
+    $CARGA = $row_foc['CARGA'];
+    $POLVO = $row_foc['POLVO'];
+    $MUTAGENICO = $row_foc['MUTAGENICO'];
+    $BIOLOGICO = $row_foc['BIOLOGICO'];
+    $REPETITIVO = $row_foc['REPETITIVO'];
+    $SEGMENTARIO = $row_foc['SEGMENTARIO'];
+    $SOLVENTE = $row_foc['SOLVENTE'];
+    $POSTURA = $row_foc['POSTURA'];
+    $PVD = $row_foc['PVD'];
+    $TOTAL = $row_foc['TOTAL'];
+    $METALES = $row_foc['METALES'];
+    $TURNOS = $row_foc['TURNOS'];
+    $OTROS = strtoupper($row_foc['OTROS']);
+    $CABEZA = strtoupper($row_foc['CABEZA']);
+    $REFLEJOS = strtoupper($row_foc['REFLEJOS']);
+    $ABDOMENF = strtoupper($row_foc['ABDOMEN']);
+    $GANGLIOS = strtoupper($row_foc['GANGLIOS']);
+    $LENGUAJE = strtoupper($row_foc['LENGUAJE']);
+    
 ?>
 
 <!-- AQUI EMPIEZA EL CUERPO -->
@@ -124,6 +176,7 @@
 
                     <!--EMPIEZA EL TAB-->
                     <div class="tab-content tabcontent-border text-left">
+
                         <!-- FICHA MUSCULO ESQUELETICA -->
                         <div class="tab-pane p-20 active" id="musculo" role="tabpanel">
                             <h4 class="text-center">FICHA MÚSCULO ESQUELÉTICA</h4>
@@ -147,7 +200,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abdomen" id="abdomen1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="abdomen" id="abdomen1" value="1" <?php if($ABDOMEN == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomen1"> <img src="images/vista_musculo1.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -156,7 +209,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input  required type="radio" class="custom-control-input" name="abdomen" id="abdomen2" value = "2">
+                                                                <input  required type="radio" class="custom-control-input" name="abdomen" id="abdomen2" value="2" <?php if($ABDOMEN == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomen2"> <img src="images/vista_musculo1.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -165,7 +218,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abdomen" id="abdomen3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="abdomen" id="abdomen3" value="3" <?php if($ABDOMEN == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomen3"> <img src="images/vista_musculo1.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -174,7 +227,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abdomen" id="abdomen4" value = "4">
+                                                                <input required type="radio" class="custom-control-input" name="abdomen" id="abdomen4" value="4" <?php if($ABDOMEN == 4){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomen4"> <img src="images/vista_musculo1.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -186,7 +239,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera1" value="1" <?php if($CADERA == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="cadera1"> <img src="images/vista_musculo2.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -195,7 +248,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera2" value = "2">
+                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera2" value="2" <?php if($CADERA == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="cadera2"> <img src="images/vista_musculo2.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -204,7 +257,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera3" value="3" <?php if($CADERA == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="cadera3"> <img src="images/vista_musculo2.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -213,7 +266,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera4" value = "4">
+                                                                <input required type="radio" class="custom-control-input" name="cadera" id="cadera4" value="4" <?php if($CADERA == 4){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="cadera4"> <img src="images/vista_musculo2.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -225,7 +278,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo1" value="1" <?php if($MUSLO == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="muslo1"> <img src="images/vista_musculo3.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -234,7 +287,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo2" value = "2">
+                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo2" value="2" <?php if($MUSLO == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="muslo2"> <img src="images/vista_musculo3.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -243,7 +296,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo3" value="3" <?php if($MUSLO == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="muslo3"> <img src="images/vista_musculo3.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -252,7 +305,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo4" value = "4">
+                                                                <input required type="radio" class="custom-control-input" name="muslo" id="muslo4" value="4" <?php if($MUSLO == 4){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="muslo4"> <img src="images/vista_musculo3.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -264,7 +317,7 @@
                                                         <div class="form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla1" value="1" <?php if($ABDOMENLA == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomenla1"> <img src="images/vista_musculo4.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -273,7 +326,7 @@
                                                         <div class="form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla2" value = "2">
+                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla2" value="2" <?php if($ABDOMENLA == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomenla2"> <img src="images/vista_musculo4.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -282,7 +335,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla3" value="3" <?php if($ABDOMENLA == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomenla3"> <img src="images/vista_musculo4.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -291,7 +344,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla4" value = "4">
+                                                                <input required type="radio" class="custom-control-input" name="abdomenla" id="abdomenla4" value="4" <?php if($ABDOMENLA == 4){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abdomenla4"> <img src="images/vista_musculo4.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -305,7 +358,7 @@
                                 <div class="col-md-12">
                                     <div class = "form-group text-left">
                                         <label class="control-label">OBSERVACIONES</label>
-                                        <textarea  class="form-control" id="observaciones_aptitud" name="observaciones_aptitud" rows="3"></textarea>
+                                        <textarea  class="form-control" id="observaciones_aptitud" name="observaciones_aptitud" rows="3"><?=$OBSERVACIONES_APTITUD?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -333,7 +386,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_1" value="1" <?php if($ABDUCCION180 == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion180_1"> <img src="images/vista_musculo5.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -342,7 +395,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_2" value = "2">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_2" value="2" <?php if($ABDUCCION180 == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion180_2"> <img src="images/vista_musculo6.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -351,14 +404,14 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_3" value="3" <?php if($ABDUCCION180 == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion180_3"> <img src="images/vista_musculo7.png"></i></label></label>
                                                             </div>  
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="abduccion180_dolor" id="abduccion180_dolor" value="1">
+                                                            <input  type="checkbox" class="custom-control-input" name="abduccion180_dolor" id="abduccion180_dolor" value="1" <?php if($ABDUCCION180_DOLOR == 1){ echo "checked"; }?>>
                                                             <label class="custom-control-label" for="abduccion180_dolor">SI</label>
                                                         </div>
                                                     </td>
@@ -369,7 +422,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_1" value="1" <?php if($ABDUCCION80 == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion80_1"> <img src="images/vista_musculo8.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -378,7 +431,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_2" value = "2">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_2" value="2" <?php if($ABDUCCION80 == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion80_2"> <img src="images/vista_musculo9.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -387,14 +440,14 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_3" value="3" <?php if($ABDUCCION80 == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion80_3"> <img src="images/vista_musculo10.png"></i></label></label>
                                                             </div>  
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="abduccion80_dolor" id="abduccion80_dolor" value="1">
+                                                        <div class="custom-control custom-checkbox col-md-12"> 
+                                                            <input  type="checkbox" class="custom-control-input" name="abduccion80_dolor" id="abduccion80_dolor" value="1" <?php if($ABDUCCION80_DOLOR == 1){ echo "checked"; }?>>
                                                             <label class="custom-control-label" for="abduccion80_dolor">SI</label>
                                                         </div>
                                                     </td>
@@ -405,7 +458,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_1" value="1" <?php if($ABDUCCION90 == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion90_1"> <img src="images/vista_musculo11.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -414,7 +467,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_2" value = "2">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_2" value="2" <?php if($ABDUCCION90 == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion90_2"> <img src="images/vista_musculo12.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -423,14 +476,14 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_3" value="3" <?php if($ABDUCCION90 == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="abduccion90_3"> <img src="images/vista_musculo13.png"></i></label></label>
                                                             </div>  
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="abduccion90_dolor" id="abduccion90_dolor" value="1">
+                                                            <input  type="checkbox" class="custom-control-input" name="abduccion90_dolor" id="abduccion90_dolor" value="1" <?php if($ABDUCCION90_DOLOR == 1){ echo "checked"; }?>>
                                                             <label class="custom-control-label" for="abduccion90_dolor">SI</label>
                                                         </div>
                                                     </td>
@@ -441,7 +494,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_1" value = "1">
+                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_1" value="1" <?php if($ROTACION_INTERNA == 1){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="rotacion_interna_1"> <img src="images/vista_musculo14.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -450,7 +503,7 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_2" value = "2">
+                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_2" value="2" <?php if($ROTACION_INTERNA == 2){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="rotacion_interna_2"> <img src="images/vista_musculo15.png"></i></label></label>
                                                             </div>  
                                                         </div>
@@ -459,14 +512,14 @@
                                                         <div class = "form-group text-left">
                                                             <label class="control-label">
                                                             <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_3" value = "3">
+                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_3" value="3" <?php if($ROTACION_INTERNA == 3){ echo "checked"; }?>>
                                                                 <label class="custom-control-label" for="rotacion_interna_3"> <img src="images/vista_musculo16.png"></i></label></label>
                                                             </div>  
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="rotacion_interna_dolor" id="rotacion_interna_dolor" value="1">
+                                                            <input  type="checkbox" class="custom-control-input" name="rotacion_interna_dolor" id="rotacion_interna_dolor" value="1" <?php if($ROTACION_INTERNA_DOLOR == 1){ echo "checked"; }?>>
                                                             <label class="custom-control-label" for="rotacion_interna_dolor">SI</label>
                                                         </div>
                                                     </td>
@@ -479,7 +532,7 @@
                                 <div class="col-md-12">
                                     <div class = "form-group text-left">
                                         <label class="control-label">OBSERVACIONES</label>
-                                        <textarea class="form-control" id="observaciones_rangos" name="observaciones_rangos" rows="3"></textarea>
+                                        <textarea class="form-control" id="observaciones_rangos" name="observaciones_rangos" rows="3"><?=$OBSERVACIONES_RANGOS?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -492,28 +545,28 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Anillos Inguinales</label>
-                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control" value="<?=$ANILLOS?>">  
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Hernias</label>
-                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control" value="<?=$HERNIAS?>">  
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Várices</label>
-                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control" value="<?=$VARICES?>">  
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Órganos Genitales</label>
-                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control" value="<?=$GENITALES?>">  
                                     </div>
                                 </div>
 
@@ -521,115 +574,115 @@
                                     <div class="form-group">
                                         <label class="control-label">Tacto Rectal</label>
                                         <select  class="form-control custom-select" id="tacto_rectal" name="tacto_rectal" data-placeholder="Choose a Category" tabindex="1">
-                                            <option value="1">No se hizo</option>
-                                            <option value="2">Normal</option>
-                                            <option value="3">Anormal</option>
-                                            <option value="4">Describir en observaciones</option>
+                                            <option value="1" <?php if($TACTO_RECTAL == 1){ echo "selected"; }?>>No se hizo</option>
+                                            <option value="2" <?php if($TACTO_RECTAL == 2){ echo "selected"; }?>>Normal</option>
+                                            <option value="3" <?php if($TACTO_RECTAL == 3){ echo "selected"; }?>>Anormal</option>
+                                            <option value="4" <?php if($TACTO_RECTAL == 4){ echo "selected"; }?>>Describir en observaciones</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="ruido" name="ruido" value="">
+                                        <input type="checkbox" class="custom-control-input" id="ruido" name="ruido" value="1" <?php if($RUIDO == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="ruido">Ruido</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="cancerigenos" name="cancerigenos" value="">
+                                        <input type="checkbox" class="custom-control-input" id="cancerigenos" name="cancerigenos" value="1" <?php if($CANCERIGENO == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="cancerigenos">Cancerígenos</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="temperaturas" name="temperaturas" value="">
+                                        <input type="checkbox" class="custom-control-input" id="temperaturas" name="temperaturas" value="1" <?php if($TEMPERATURA == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="temperaturas">Temperaturas</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="cargas" name="cargas" value="">
+                                        <input type="checkbox" class="custom-control-input" id="cargas" name="cargas" value="1" <?php if($CARGA == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="cargas">Cargas</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="polvo" name="polvo" value="">
+                                        <input type="checkbox" class="custom-control-input" id="polvo" name="polvo" value="1" <?php if($POLVO == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="polvo">Polvo</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="mutageneticos" name="mutageneticos" value="">
+                                        <input type="checkbox" class="custom-control-input" id="mutageneticos" name="mutageneticos" value="1" <?php if($MUTAGENICO == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="mutageneticos">Mutagenéticos</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="biologicos" name="biologicos" value="">
+                                        <input type="checkbox" class="custom-control-input" id="biologicos" name="biologicos" value="1" <?php if($BIOLOGICO == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="biologicos">Biológicos</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="mov_rep" name="mov_rep" value="">
+                                        <input type="checkbox" class="custom-control-input" id="mov_rep" name="mov_rep" value="1" <?php if($REPETITIVO == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="mov_rep">Mov. Repet.</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="vib_segmentaria" name="vib_segmentaria" value="">
+                                        <input type="checkbox" class="custom-control-input" id="vib_segmentaria" name="vib_segmentaria" value="1" <?php if($SEGMENTARIO == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="vib_segmentaria">Vib. Segmentaria</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="solventes" name="solventes" value="">
+                                        <input type="checkbox" class="custom-control-input" id="solventes" name="solventes" value="1" <?php if($SOLVENTE == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="solventes">Solventes</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="posturas" name="posturas" value="">
+                                        <input type="checkbox" class="custom-control-input" id="posturas" name="posturas" value="1" <?php if($POSTURA == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="posturas">Posturas</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="pvd" name="pvd" value="">
+                                        <input type="checkbox" class="custom-control-input" id="pvd" name="pvd" value="1" <?php if($PVD == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="pvd">PVD</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="vib_total" name="vib_total" value="">
+                                        <input type="checkbox" class="custom-control-input" id="vib_total" name="vib_total" value="1" <?php if($TOTAL == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="vib_total">Vib. total</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="metales_pesados" name="metales_pesados" value="">
+                                        <input type="checkbox" class="custom-control-input" id="metales_pesados" name="metales_pesados" value="1" <?php if($METALES == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="metales_pesados">Metales Pesados</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="turnos" name="turnos" value="">
+                                        <input type="checkbox" class="custom-control-input" id="turnos" name="turnos" value="1" <?php if($TURNOS == 1){ echo "checked"; }?>>
                                         <label class="custom-control-label" for="turnos">Turnos</label>
                                     </div>
                                 </div>
@@ -637,7 +690,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="control-label">Otros</label>
-                                        <input type="text" id="otras_interferencias" name="otras_interferencias" class="form-control">  
+                                        <input type="text" id="otras_interferencias" name="otras_interferencias" class="form-control" value="<?=$OTROS?>">  
                                     </div>
                                 </div>
                             </div>
@@ -662,7 +715,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="row" id="cabeza_hallazgo" style="display: block;">
-                                                    <textarea id="cabeza_hallazgo" name="cabeza_hallazgo" class="form-control" rows="2"></textarea>
+                                                    <textarea id="cabeza_hallazgo" name="cabeza_hallazgo" class="form-control" rows="2"><?=$CABEZA?></textarea>
                                                 </div>
 
                                                 <div class="row" id="cabeza_sinhallazgo" style="display: none;">
@@ -690,7 +743,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="row" id="reflejo_osteotendinoso_hallazgo" style="display: block;">
-                                                    <textarea id="reflejo_osteotendinoso_hallazgo" name="reflejo_osteotendinoso_hallazgo" class="form-control" rows="2"></textarea>
+                                                    <textarea id="reflejo_osteotendinoso_hallazgo" name="reflejo_osteotendinoso_hallazgo" class="form-control" rows="2"><?=$REFLEJOS?></textarea>
                                                 </div>
 
                                                 <div class="row" id="reflejo_osteotendinoso_sinhallazgo" style="display: none;">
@@ -718,7 +771,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="row" id="abdomen_hallazgo" style="display: block;">
-                                                    <textarea id="abdomen_hallazgo" name="abdomen_hallazgo" class="form-control" rows="2"></textarea>
+                                                    <textarea id="abdomen_hallazgo" name="abdomen_hallazgo" class="form-control" rows="2"><?=$ABDOMENF?></textarea>
                                                 </div>
 
                                                 <div class="row" id="abdomen_sinhallazgo" style="display: none;">
@@ -746,7 +799,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="row" id="ganglios_hallazgo" style="display: block;">
-                                                    <textarea id="ganglios_hallazgo" name="ganglios_hallazgo" class="form-control" rows="2"></textarea>
+                                                    <textarea id="ganglios_hallazgo" name="ganglios_hallazgo" class="form-control" rows="2"><?=$GANGLIOS?></textarea>
                                                 </div>
 
                                                 <div class="row" id="ganglios_sinhallazgo" style="display: none;">
@@ -774,7 +827,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="row" id="lenguaje_hallazgo" style="display: block;">
-                                                    <textarea id="lenguaje_hallazgo" name="lenguaje_hallazgo" class="form-control" rows="2"></textarea>
+                                                    <textarea id="lenguaje_hallazgo" name="lenguaje_hallazgo" class="form-control" rows="2"><?=$LENGUAJE?></textarea>
                                                 </div>
 
                                                 <div class="row" id="lenguaje_sinhallazgo" style="display: none;">
