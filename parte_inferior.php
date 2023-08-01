@@ -33,6 +33,6 @@
     <!-- jQuery FullCalendar -->
     <script src="dist/js/jquery-ui.min.js"></script>
     <script src="dist/js/moment.min.js"></script>
-    <script src="dist/js/fullcalendar.min.js"></script>
+    <script src="dist/js/fullcalendar.min.js"></script>    
 </body>
 </html>

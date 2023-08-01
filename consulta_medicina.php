@@ -32,7 +32,13 @@
     $PACIENTE = strtoupper($row['PACIENTE']);
     $EDAD = $row['EDAD'];
     if($row['DES_GENERO'] == "MA"){ $DES_GENERO = "MASCULINO"; } else { $DES_GENERO = "FEMENINO"; }
-    
+
+
+    //DATOS DE LA HISTORIA OCUPACIONAL
+    $sql_hoc = "SELECT FEC_INICIO, EMPRESA, ACTIVIDADES, PUESTO, TIEMPO, CAUSA_RETIRO 
+                FROM $BD..SO_HISTORIA_OCUPACIONAL
+                WHERE COD_PACIENTE = $COD_PACIENTE";
+    $res_hoc = sqlsrv_query($conn, $sql_hoc);
 ?>
 
 <!-- AQUI EMPIEZA EL CUERPO -->
@@ -53,6 +59,12 @@
                         <a class="nav-link" data-toggle="tab" href="#ficha" role="tab">
                             <span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down">FICHA MEDICA OCUPACIONAL</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#historia" role="tab">
+                            <span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down">HISTORIA OCUPACIONAL</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -472,180 +484,351 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- FICHA MEDICA OCUPACIONAL - ANEXO 16 -->
                         <div class="tab-pane p-20" id="ficha" role="tabpanel">
                             <h4 class="text-center">FICHA MÉDICA OCUPACIONAL</h4>
                             <div class="row p-20">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Anillos Inguinales</label>
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Hernias</label>
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Várices</label>
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Órganos Genitales</label>
+                                        <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Tacto Rectal</label>
+                                        <select  class="form-control custom-select" id="tacto_rectal" name="tacto_rectal" data-placeholder="Choose a Category" tabindex="1">
+                                            <option value="1">No se hizo</option>
+                                            <option value="2">Normal</option>
+                                            <option value="3">Anormal</option>
+                                            <option value="4">Describir en observaciones</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="ruido" name="ruido" value="">
+                                        <label class="custom-control-label" for="ruido">Ruido</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="cancerigenos" name="cancerigenos" value="">
+                                        <label class="custom-control-label" for="cancerigenos">Cancerígenos</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="temperaturas" name="temperaturas" value="">
+                                        <label class="custom-control-label" for="temperaturas">Temperaturas</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="cargas" name="cargas" value="">
+                                        <label class="custom-control-label" for="cargas">Cargas</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="polvo" name="polvo" value="">
+                                        <label class="custom-control-label" for="polvo">Polvo</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="mutageneticos" name="mutageneticos" value="">
+                                        <label class="custom-control-label" for="mutageneticos">Mutagenéticos</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="biologicos" name="biologicos" value="">
+                                        <label class="custom-control-label" for="biologicos">Biológicos</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="mov_rep" name="mov_rep" value="">
+                                        <label class="custom-control-label" for="mov_rep">Mov. Repet.</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="vib_segmentaria" name="vib_segmentaria" value="">
+                                        <label class="custom-control-label" for="vib_segmentaria">Vib. Segmentaria</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="solventes" name="solventes" value="">
+                                        <label class="custom-control-label" for="solventes">Solventes</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="posturas" name="posturas" value="">
+                                        <label class="custom-control-label" for="posturas">Posturas</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="pvd" name="pvd" value="">
+                                        <label class="custom-control-label" for="pvd">PVD</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="vib_total" name="vib_total" value="">
+                                        <label class="custom-control-label" for="vib_total">Vib. total</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="metales_pesados" name="metales_pesados" value="">
+                                        <label class="custom-control-label" for="metales_pesados">Metales Pesados</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="custom-control custom-checkbox mr-sm-2 mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="turnos" name="turnos" value="">
+                                        <label class="custom-control-label" for="turnos">Turnos</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Otros</label>
+                                        <input type="text" id="otras_interferencias" name="otras_interferencias" class="form-control">  
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row p-20">
+                                <!-- Cabeza -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class = row>
+                                            <div class="col-md-8">
+                                                <label class="control-label">Cabeza</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox col-md-4">
+                                                <input type="checkbox" class="custom-control-input"  name="cabeza" id="cabeza" value = "0" onchange="javascript:showContent(this.id)" >
+                                                <label class="custom-control-label" for="cabeza">Sin Hallazgo</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row" id="cabeza_hallazgo" style="display: block;">
+                                                    <textarea id="cabeza_hallazgo" name="cabeza_hallazgo" class="form-control" rows="2"></textarea>
+                                                </div>
+
+                                                <div class="row" id="cabeza_sinhallazgo" style="display: none;">
+                                                    <textarea disabled id="" name=""  class="form-control" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Reflejos Osteotendinosos -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class = row>
+                                            <div class="col-md-8">
+                                                <label class="control-label">Reflejos Osteotendinosos</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox col-md-4">
+                                                <input type="checkbox" class="custom-control-input"  name="reflejo_osteotendinoso" id="reflejo_osteotendinoso" value = "0" onchange="javascript:showContent(this.id)" >
+                                                <label class="custom-control-label" for="reflejo_osteotendinoso">Sin Hallazgo</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row" id="reflejo_osteotendinoso_hallazgo" style="display: block;">
+                                                    <textarea id="reflejo_osteotendinoso_hallazgo" name="reflejo_osteotendinoso_hallazgo" class="form-control" rows="2"></textarea>
+                                                </div>
+
+                                                <div class="row" id="reflejo_osteotendinoso_sinhallazgo" style="display: none;">
+                                                    <textarea disabled id="" name=""  class="form-control" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Abdomen -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class = row>
+                                            <div class="col-md-8">
+                                                <label class="control-label">Abdomen</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox col-md-4">
+                                                <input type="checkbox" class="custom-control-input"  name="abdomen" id="abdomen" value = "0" onchange="javascript:showContent(this.id)" >
+                                                <label class="custom-control-label" for="abdomen">Sin Hallazgo</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row" id="abdomen_hallazgo" style="display: block;">
+                                                    <textarea id="abdomen_hallazgo" name="abdomen_hallazgo" class="form-control" rows="2"></textarea>
+                                                </div>
+
+                                                <div class="row" id="abdomen_sinhallazgo" style="display: none;">
+                                                    <textarea disabled id="" name=""  class="form-control" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Ganglios -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class = row>
+                                            <div class="col-md-8">
+                                                <label class="control-label">Ganglios</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox col-md-4">
+                                                <input type="checkbox" class="custom-control-input"  name="ganglios" id="ganglios" value = "0" onchange="javascript:showContent(this.id)" >
+                                                <label class="custom-control-label" for="ganglios">Sin Hallazgo</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row" id="ganglios_hallazgo" style="display: block;">
+                                                    <textarea id="ganglios_hallazgo" name="ganglios_hallazgo" class="form-control" rows="2"></textarea>
+                                                </div>
+
+                                                <div class="row" id="ganglios_sinhallazgo" style="display: none;">
+                                                    <textarea disabled id="" name=""  class="form-control" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Lenguaje -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class = row>
+                                            <div class="col-md-8">
+                                                <label class="control-label">Lenguaje, Atención, Memoria</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox col-md-4">
+                                                <input type="checkbox" class="custom-control-input"  name="lenguaje" id="lenguaje" value = "0" onchange="javascript:showContent(this.id)" >
+                                                <label class="custom-control-label" for="lenguaje">Sin Hallazgo</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row" id="lenguaje_hallazgo" style="display: block;">
+                                                    <textarea id="lenguaje_hallazgo" name="lenguaje_hallazgo" class="form-control" rows="2"></textarea>
+                                                </div>
+
+                                                <div class="row" id="lenguaje_sinhallazgo" style="display: none;">
+                                                    <textarea disabled id="" name=""  class="form-control" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FICHA MEDICA OCUPACIONAL - ANEXO 16 -->
+                        <div class="tab-pane p-20" id="historia" role="tabpanel">
+                            <h4 class="text-center p-20">HISTORIA OCUPACIONAL</h4>
+                            <div class="row">
                                 <div class="col-md-12">
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>RANGOS PARTICULARES</th>
-                                                    <th>ÓPTIMO: 1</th>
-                                                    <th>LIMITADO: 2</th>
-                                                    <th>MUY LIMITADO: 3</th>
-                                                    <th>DOLOR CON RESISTENCIA</th>
+                                                    <th class="text-center">Fec. Inicio</th>
+                                                    <th class="text-center">Empresa</th>
+                                                    <th class="text-center">Actividades</th>
+                                                    <th class="text-center">Puesto</th>
+                                                    <th class="text-center">Tiempo</th>
+                                                    <th class="text-center">Causa de Retiro</th>
                                                 </tr>
-                                            </thead>
+                                            </thead>                                        
                                             <tbody>
+                                                <?php while($row_hoc = sqlsrv_fetch_array($res_hoc)){ 
+                                                    $FEC_INICIO = $row_hoc['FEC_INICIO'];
+                                                    $EMPRESA = $row_hoc['EMPRESA'];
+                                                    $ACTIVIDADES = $row_hoc['ACTIVIDADES'];
+                                                    $PUESTO = $row_hoc['PUESTO'];
+                                                    $TIEMPO = $row_hoc['TIEMPO'];
+                                                    $CAUSA_RETIRO = $row_hoc['CAUSA_RETIRO'];
+                                                ?>
                                                 <tr>
-                                                    <td>Abducción de hombro (Normal 0° - 180°)</td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_1" value = "1">
-                                                                <label class="custom-control-label" for="abduccion180_1"> <img src="images/vista_musculo5.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_2" value = "2">
-                                                                <label class="custom-control-label" for="abduccion180_2"> <img src="images/vista_musculo6.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion180" id="abduccion180_3" value = "3">
-                                                                <label class="custom-control-label" for="abduccion180_3"> <img src="images/vista_musculo7.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="abduccion180_dolor" id="abduccion180_dolor" value="1">
-                                                            <label class="custom-control-label" for="abduccion180_dolor">SI</label>
-                                                        </div>
-                                                    </td>
+                                                    <td class="text-center"><?=$FEC_INICIO?></td>
+                                                    <td><?=$EMPRESA?></td>
+                                                    <td><?=$ACTIVIDADES?></td>
+                                                    <td><?=$PUESTO?></td>
+                                                    <td><?=$TIEMPO?></td>
+                                                    <td><?=$CAUSA_RETIRO?></td>
                                                 </tr>
-                                                <tr>
-                                                    <td>Adducción de hombro (Normal 0° - 80°)</td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_1" value = "1">
-                                                                <label class="custom-control-label" for="abduccion80_1"> <img src="images/vista_musculo8.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_2" value = "2">
-                                                                <label class="custom-control-label" for="abduccion80_2"> <img src="images/vista_musculo9.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion80" id="abduccion80_3" value = "3">
-                                                                <label class="custom-control-label" for="abduccion80_3"> <img src="images/vista_musculo10.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="abduccion80_dolor" id="abduccion80_dolor" value="1">
-                                                            <label class="custom-control-label" for="abduccion80_dolor">SI</label>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Rotación externa (Normal 0° - 90°)</td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_1" value = "1">
-                                                                <label class="custom-control-label" for="abduccion90_1"> <img src="images/vista_musculo11.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_2" value = "2">
-                                                                <label class="custom-control-label" for="abduccion90_2"> <img src="images/vista_musculo12.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="abduccion90" id="abduccion90_3" value = "3">
-                                                                <label class="custom-control-label" for="abduccion90_3"> <img src="images/vista_musculo13.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="abduccion90_dolor" id="abduccion90_dolor" value="1">
-                                                            <label class="custom-control-label" for="abduccion90_dolor">SI</label>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Rotación externa de hombro interna</td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_1" value = "1">
-                                                                <label class="custom-control-label" for="rotacion_interna_1"> <img src="images/vista_musculo14.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_2" value = "2">
-                                                                <label class="custom-control-label" for="rotacion_interna_2"> <img src="images/vista_musculo15.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class = "form-group text-left">
-                                                            <label class="control-label">
-                                                            <div class="custom-control custom-radio">
-                                                                <input required type="radio" class="custom-control-input" name="rotacion_interna" id="rotacion_interna_3" value = "3">
-                                                                <label class="custom-control-label" for="rotacion_interna_3"> <img src="images/vista_musculo16.png"></i></label></label>
-                                                            </div>  
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="custom-control custom-checkbox col-md-12">
-                                                            <input  type="checkbox" class="custom-control-input" name="rotacion_interna_dolor" id="rotacion_interna_dolor" value="1">
-                                                            <label class="custom-control-label" for="rotacion_interna_dolor">SI</label>
-                                                        </div>
-                                                    </td>
-                                                </tr> 
+                                                <?php } ?>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-
-                                <div class="col-md-12">
-                                    <div class = "form-group text-left">
-                                        <label class="control-label">OBSERVACIONES</label>
-                                        <textarea class="form-control" id="observaciones_rangos" name="observaciones_rangos" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
+                            </div>                                
                         </div>
+
                         <!-- TRABAJO EN ALTURA - ANEXO 2A -->
                         <div class="tab-pane" id="altura" role="tabpanel">                                
                             <div class="row p-20">
@@ -1187,6 +1370,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- ALTITUD 2500 M.S.N.M. - ANEXO 16 -->
                         <div class="tab-pane" id="altitud" role="tabpanel">
                             <div class="row p-20">
@@ -1497,6 +1681,7 @@
                                 </div>                                    
                             </div>
                         </div>
+
                         <!-- SINTOMATICO RESPIRATORIO -->
                         <div class="tab-pane" id="sintomatico" role="tabpanel">
                             <div class="row p-20">
@@ -1913,6 +2098,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- ANTECEDENTES PERSONALES -->
                         <div class="tab-pane" id="personales" role="tabpanel">
                             <div class="row p-20">
@@ -2160,6 +2346,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- ANTECEDENTES FAMILIARES -->
                         <div class="tab-pane" id="familiares" role="tabpanel">
                             <div class="row p-20">
@@ -2252,6 +2439,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- EVALUACIÓN MÉDICA -->
                         <div class="tab-pane" id="evaluacion" role="tabpanel">
                             <div class="row p-20">
@@ -2333,7 +2521,7 @@
                                         <label class="control-label">Otros</label>
                                         <input type="text" id="otros_hce" name="otros_hce" class="form-control">  
                                     </div>
-                                </div>
+                                </div>                                
 
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -2355,22 +2543,23 @@
                                             <option value="2">Anormal</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div>                                
 
                                 <div class="col-md-12">
                                     <div class = "form-group text-left">
                                         <label class="control-label"><h5><strong>EXAMEN FÍSICO</strong></h5></label>
                                     </div>
-                                </div>
+                                </div>                                
 
-                                <div class="col-md-12">
+                                <!-- Piel -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Piel</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="piel" id="piel" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="piel">Sin Hallazgo</label>
                                             </div>
@@ -2390,14 +2579,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Cabello -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Cabello</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="cabello" id="cabello" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="cabello">Sin Hallazgo</label>
                                             </div>
@@ -2417,14 +2607,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Ojos y Anexos -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Ojos y Anexos</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="ojosanexos" id="ojosanexos" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="ojosanexos">Sin Hallazgo</label>
                                             </div>
@@ -2444,14 +2635,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Oídos -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Oídos</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="oidos" id="oidos" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="oidos">Sin Hallazgo</label>
                                             </div>
@@ -2471,14 +2663,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Nariz -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Nariz</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="nariz" id="nariz" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="nariz">Sin Hallazgo</label>
                                             </div>
@@ -2498,14 +2691,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Boca -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Boca</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="boca" id="boca" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="boca">Sin Hallazgo</label>
                                             </div>
@@ -2525,14 +2719,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Faringe -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Faringe</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="faringe" id="faringe" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="faringe">Sin Hallazgo</label>
                                             </div>
@@ -2552,14 +2747,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Cuello -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Cuello</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="cuello" id="cuello" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="cuello">Sin Hallazgo</label>
                                             </div>
@@ -2579,14 +2775,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Aparato Respiratorio -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Aparato Respiratorio</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="aparatorespiratorio" id="aparatorespiratorio" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="aparatorespiratorio">Sin Hallazgo</label>
                                             </div>
@@ -2606,14 +2803,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Aparato Cardiovascular -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Aparato Cardiovascular</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="aparatocardio" id="aparatocardio" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="aparatocardio">Sin Hallazgo</label>
                                             </div>
@@ -2633,14 +2831,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Aparato Digestivo -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Aparato Digestivo</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="aparatodigestivo" id="aparatodigestivo" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="aparatodigestivo">Sin Hallazgo</label>
                                             </div>
@@ -2660,14 +2859,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Aparato Genitourinario -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Aparato Genitourinario</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="aparatogenito" id="aparatogenito" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="aparatogenito">Sin Hallazgo</label>
                                             </div>
@@ -2687,14 +2887,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Aparato Locomotor -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Aparato Locomotor</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="aparatolocomotor" id="aparatolocomotor" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="aparatolocomotor">Sin Hallazgo</label>
                                             </div>
@@ -2714,14 +2915,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Marcha -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Marcha</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="marcha" id="marcha" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="marcha">Sin Hallazgo</label>
                                             </div>
@@ -2741,14 +2943,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Columna -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Columna</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="columna" id="columna" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="columna">Sin Hallazgo</label>
                                             </div>
@@ -2768,14 +2971,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Miembros Superiores -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Miembros Superiores</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="miembrosup" id="miembrosup" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="miembrosup">Sin Hallazgo</label>
                                             </div>
@@ -2795,14 +2999,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Miembros Inferiores -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Miembros Inferiores</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="miembrosinfe" id="miembrosinfe" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="miembrosinfe">Sin Hallazgo</label>
                                             </div>
@@ -2822,14 +3027,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- Sistema Linfático -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Sistema Linfático</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="sistemalinfatico" id="sistemalinfatico" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="sistemalinfatico">Sin Hallazgo</label>
                                             </div>
@@ -2847,16 +3053,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>                                
 
-                                <div class="col-md-12">
+                                <!-- Sistema Nervioso -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <div class = row>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <label class="control-label">Sistema Nervioso</label>
                                             </div>
 
-                                            <div class="custom-control custom-checkbox col-sm-2">
+                                            <div class="custom-control custom-checkbox col-md-4">
                                                 <input type="checkbox" class="custom-control-input"  name="sistemanervioso" id="sistemanervioso" value = "0" onchange="javascript:showContent(this.id)" >
                                                 <label class="custom-control-label" for="sistemanervioso">Sin Hallazgo</label>
                                             </div>
@@ -2905,6 +3112,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- CONCLUSIONES -->
                         <div class="tab-pane" id="conclusiones" role="tabpanel">
                             <div class="row p-20">
@@ -2948,6 +3156,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- DIAGNÓSTICO -->
                         <div class="tab-pane" id="diagnostico" role="tabpanel">         
                             <div class="row p-20">
@@ -3059,3 +3268,6 @@
 
 <?php require_once "parte_inferior.php"; ?>
 <script type="text/javascript" src="js/vista_medico.js"></script>
+<!-- icheck -->
+<script src="assets/node_modules/icheck/icheck.min.js"></script>
+<script src="assets/node_modules/icheck/icheck.init.js"></script>

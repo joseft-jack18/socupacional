@@ -296,6 +296,23 @@ $("#guardar_datos_evaluacion_odontologia").submit(function( event ) {
 });
 
 //------------------------------------------------------------------------------------------------------------------
+//---------------------------------------- HISTORIA MEDICINA GENERAL -----------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function showContent(id){
+    checkbox = document.getElementById(id);
+    ap = document.getElementById(id+"_hallazgo");
+    ap_v = document.getElementById(id+"_sinhallazgo");
+    
+    if (checkbox.checked) {
+        ap_v.style.display = 'block';
+        ap.style.display = 'none';
+    } else {
+        ap_v.style.display = 'none';
+        ap.style.display = 'block';
+    }    
+}
+
+//------------------------------------------------------------------------------------------------------------------
 //----------------------------------------- HISTORIA CLINICA NORMAL ------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 $(document).ready(function(){
